@@ -15,3 +15,7 @@
   justify-content: center;
   align-items: center;
 }
+.contentContainer {
+  padding-left: 200px; /* Adjust this value to match the width of your sidebar */
+  margin-top: 50px;
+}

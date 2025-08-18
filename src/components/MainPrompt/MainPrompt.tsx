@@ -29,6 +29,8 @@ import Clip from "../../../public/svgs/Clip.svg";
 import Check from "../../../public/svgs/Check.svg";
 import CrossRed from "../../../public/svgs/CrossRed.svg";
 
+
+
 const MainPrompt = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -51,6 +53,7 @@ const MainPrompt = () => {
     icon: Filter,
     query: "",
   });
+  const [stripeLoading, setStripeLoading] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
@@ -60,6 +63,29 @@ const MainPrompt = () => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleStripeCheckout = async () => {
+    setStripeLoading(true);
+    try {
+      // **REPLACE THIS with your actual Price ID from Stripe**
+      const PRO_PLAN_PRICE_ID = 'price_1RxTgJRzGCI3yfsKYOelyZol'; 
+      const res = await fetch('/api/stripe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ priceId: PRO_PLAN_PRICE_ID }),
+      });
+      const data = await res.json();
+      console.log("Stripe API response:", data); 
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error('Stripe checkout failed:', error);
+      setStripeLoading(false);
+    }
+  };
 
   const handleFocusChange = (
     website: string,
@@ -396,6 +422,18 @@ const MainPrompt = () => {
                 />
               )}
             </div>
+
+            {/* **YOUR NEW STRIPE BUTTON GOES HERE** */}
+            <button
+              onClick={handleStripeCheckout}
+              disabled={stripeLoading}
+              className={styles.button}
+            >
+              <p className={styles.buttonText}>
+                {stripeLoading ? "Loading..." : "Pro Plan - $10"}
+              </p>
+            </button>
+
           </div>
           <div className={styles.sendButton}>
             <Image
