@@ -24,21 +24,21 @@ jobs:
           lfs: false
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile
 
       - name: Build app
-        run: yarn build   # 👈 make sure this matches your package.json build script
+        run: yarn build   # 👈 this runs "next build"
 
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GREEN_PLANT_0AC49501E }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}  # 👈 default name
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           ###### Repository/Build Configurations ######
           app_location: "/"        # App source code path
-          api_location: ""         # No API
+          api_location: ""         # No API functions
           output_location: ".next" # Built app folder (use "out" if you run `next export`)
           ###### End of Configurations ######
 
@@ -53,5 +53,5 @@ jobs:
         id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GREEN_PLANT_0AC49501E }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }} # 👈 match above
           action: "close"
